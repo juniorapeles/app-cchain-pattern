@@ -1,1 +1,1 @@
-"# ja-starter-template" 
+# ja-starter-template
