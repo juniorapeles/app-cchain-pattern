@@ -1,6 +1,7 @@
 spring:
   application:
-    name: ja-startarer-template
+    name: @project.artifactId@
+
   profiles:
     active: default
 
@@ -36,3 +37,14 @@ security:
     jwt:
       secret: "minhaSuperChaveSecreta123456"
       expiration: 86400000
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /api-docs
+
+project:
+  name: @project.artifactId@
+  version: @project.version@
+  description: @project.description@
