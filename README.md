@@ -1,30 +1,26 @@
-# 🧪 JA Starter Template
+# 🧪 JA Validation Chain Template
 
-Template inicial para projetos Spring Boot com autenticação JWT, documentação Swagger/OpenAPI e banco de dados em memória H2.
+Template inicial para projetos Spring Boot focado em implementação do padrão Chain of Responsibility para validação de objetos.
 
 ---
 
 ## 🚀 Tecnologias
 
-- **Java 21**
-- **Spring Boot 3.2.5**
-  - Spring Web
-  - Spring Security
-  - Spring Data JPA
-- **JWT (JSON Web Token)**
-- **H2 Database**
-- **Swagger / Springdoc OpenAPI**
-- **Maven**
+* **Java 21**
+* **Spring Boot 3.2.5**
+
+  * Spring Web
+  * Spring Dependency Injection
+* **Maven**
 
 ---
 
 ## ⚡ Funcionalidades
 
-- Autenticação e autorização com JWT
-- CRUD básico com Spring Data JPA
-- Banco em memória H2 para testes rápidos
-- Documentação da API via Swagger/OpenAPI
-- Estrutura modular para iniciar novos projetos rapidamente
+* Implementação do padrão **Chain of Responsibility**
+* Validação de objetos `CustomerDTO`
+* Extensível para adicionar novos validadores sem modificar a lógica existente
+* Injeção de dependências Spring para composição dinâmica da chain
 
 ---
 
@@ -37,49 +33,52 @@ src
 │  │  └─ xyz/juniorapeles/mananger
 │  │     ├─ controller
 │  │     ├─ service
+│  │     │  └─ customer
+│  │     │     └─ chain
+│  │     │        ├─ AbstractValidationHandler.java
+│  │     │        ├─ ValidationHandler.java
+│  │     │        └─ factory
+│  │     │           └─ ValidationChainFactory.java
 │  │     ├─ model
-│  │     ├─ repository
-│  │     └─ security
+│  │     └─ repository
 │  └─ resources
-│     ├─ application.properties
-│     └─ data.sql
 └─ test
    └─ java
 ```
 
 ---
 
-## 🚀 Rodando o Projeto
+## 🔗 Configurando a Chain
 
-1. Clone o repositório:
-```bash
-git clone <URL_DO_REPOSITORIO>
-cd <NOME_DO_PROJETO>
-```
-
-2. Build e run com Maven:
-```bash
-mvn clean install
-mvn spring-boot:run
-```
-
-3. Acesse a documentação Swagger:
-```
-http://localhost:8080/swagger-ui.html
-```
+* Criar handlers específicos estendendo `AbstractValidationHandler`
+* Anotar com `@Order` para definir a sequência
+* Registrar todos os handlers no Spring
+* A fábrica `ValidationChainFactory` monta automaticamente a chain na ordem correta
 
 ---
 
-## 🔐 Autenticação JWT
+## 🚀 Usando a Chain no Service
 
-- Endpoint para login: `/auth/login`
-- Receba o token JWT e envie no header `Authorization: Bearer <token>` para acessar endpoints protegidos.
+```java
+@Service
+public class CustomerService {
+    private final ValidationHandler chain;
+
+    public CustomerService(ValidationChainFactory factory) {
+        this.chain = factory.validationChain();
+    }
+
+    public void registerCustomer(CustomerDTO customer) {
+        chain.handle(customer);
+        System.out.println("Cliente registrado com sucesso!");
+    }
+}
+```
 
 ---
 
 ## 🛠 Próximos Passos
 
-- Configurar banco de dados PostgreSQL/MySQL
-- Implementar testes unitários e de integração
-- Criar templates para logging e monitoramento
-
+* Adicionar mais validadores customizados
+* Integrar com logs ou interceptors para monitoramento de validações
+* Criar testes unitários para cada handler
