@@ -1,6 +1,6 @@
 # 🧪 JA Validation Chain Template
 
-Template inicial para projetos Spring Boot focado em implementação do padrão Chain of Responsibility para validação de objetos.
+Template inicial para projetos Spring Boot focado em implementação do padrão **Chain of Responsibility** e uso de **Factory Pattern** para composição de validações.
 
 ---
 
@@ -15,12 +15,20 @@ Template inicial para projetos Spring Boot focado em implementação do padrão 
 
 ---
 
-## ⚡ Funcionalidades
+## ⚡ Padrões de Projeto Utilizados
 
-* Implementação do padrão **Chain of Responsibility**
-* Validação de objetos `CustomerDTO`
-* Extensível para adicionar novos validadores sem modificar a lógica existente
-* Injeção de dependências Spring para composição dinâmica da chain
+### 1️⃣ Chain of Responsibility
+
+* Permite encadear múltiplos validadores (`ValidationHandler`) de forma sequencial
+* Cada handler processa o objeto ou passa para o próximo
+* Facilita a adição de novas validações sem alterar o código existente
+* Exemplo: validar CPF, e-mail, duplicidade de cliente em uma sequência
+
+### 2️⃣ Factory Pattern
+
+* Usado para criar e montar a chain de validação automaticamente
+* `ValidationChainFactory` recebe todos os handlers do Spring, ordena e encadeia
+* O service obtém a chain pronta sem precisar saber da composição interna
 
 ---
 
@@ -45,15 +53,6 @@ src
 └─ test
    └─ java
 ```
-
----
-
-## 🔗 Configurando a Chain
-
-* Criar handlers específicos estendendo `AbstractValidationHandler`
-* Anotar com `@Order` para definir a sequência
-* Registrar todos os handlers no Spring
-* A fábrica `ValidationChainFactory` monta automaticamente a chain na ordem correta
 
 ---
 
